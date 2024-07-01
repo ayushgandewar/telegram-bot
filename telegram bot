@@ -1,0 +1,42 @@
+
+TOKEN = '7338331698:AAEVAuNtcNMmz6JTVO54khOzttpWhDqYVFA'
+
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    keyboard = [
+        [
+            InlineKeyboardButton("Login", callback_data='login'),
+            InlineKeyboardButton("Register", callback_data='register'),
+        ],
+        [InlineKeyboardButton("Customer Support", callback_data='support')],
+    ]
+    
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    await update.message.reply_text('Welcome to Lead Master! Choose an option:', reply_markup=reply_markup)
+
+async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    query = update.callback_query
+    await query.answer()
+
+    if query.data == 'login':
+        await query.edit_message_text(text="Login option selected. Feature coming soon!")
+    elif query.data == 'register':
+        await query.edit_message_text(text="Here is your registration link: https://your_registration_link.com")
+    elif query.data == 'support':
+        await query.edit_message_text(text="Customer support will contact you shortly. Please describe your issue.")
+
+def main() -> None:
+    # Create the Application instance
+    application = Application.builder().token(TOKEN).build()
+
+    # Register the start command handler
+    application.add_handler(CommandHandler("start", start))
+
+    # Register the button callback handler
+    application.add_handler(CallbackQueryHandler(button))
+
+    # Start the bot with polling (listening for updates)
+    application.run_polling()
+
+if __name__ == '__main__':
+    main()
